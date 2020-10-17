@@ -2,7 +2,7 @@
 
 #include <cctype>
 #include <sstream>
-
+#include <string>
 namespace miniplc0 {
 
 std::pair<std::optional<Token>, std::optional<CompilationError>>
@@ -112,7 +112,7 @@ Tokenizer::nextToken() {
               current_state = DFAState::LEFTBRACKET_STATE;
               break;
             case ')':
-              current_state = DFAState::REFTBRACKET_STATE;
+              current_state = DFAState::RIGHTBRACKET_STATE;
               break;
             // 不接受的字符导致的不合法的状态
             default:
@@ -158,7 +158,7 @@ Tokenizer::nextToken() {
             int32_t tem1;
             ss >> tem1;
             return std::make_pair(std::make_optional<Token>(TokenType::UNSIGNED_INTEGER,
-                                                            tem1,pos,currentPos(),
+                                                            tem1,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
         }
@@ -179,7 +179,7 @@ Tokenizer::nextToken() {
             int32_t tem1;
             ss >> tem1;
             return std::make_pair(std::make_optional<Token>(TokenType::UNSIGNED_INTEGER,
-                                                            tem1,pos,currentPos(),
+                                                            tem1,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
         }
@@ -193,75 +193,75 @@ Tokenizer::nextToken() {
         // 如果读到的字符不是上述情况之一，则回退读到的字符，并解析已经读到的字符串
         //     如果解析结果是关键字，那么返回对应关键字的token，否则返回标识符的token
         if(!current_char.value()){
-          string tem;
+          std::string tem;
           ss >> tem;
           if(tem == "begin"){
             return std::make_pair(std::make_optional<Token>(TokenType::BEGIN,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else if(tem == "end"){
             return std::make_pair(std::make_optional<Token>(TokenType::END,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else if(tem == "var"){
             return std::make_pair(std::make_optional<Token>(TokenType::VAR,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else if(tem == "const"){
             return std::make_pair(std::make_optional<Token>(TokenType::CONST,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else if(tem == "print"){
             return std::make_pair(std::make_optional<Token>(TokenType::PRINT,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else{
             return std::make_pair(std::make_optional<Token>(TokenType::IDENTIFIER,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
         }
-        auto char = current_char.value();
+        auto ch = current_char.value();
         if(miniplc0::isdigit(ch)||miniplc0::isalpha(ch)){
           ss << ch;
         }
         else{
           unreadLast();
-          string tem;
+          std::string tem;
           ss >> tem;
           if(tem == "begin"){
             return std::make_pair(std::make_optional<Token>(TokenType::BEGIN,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else if(tem == "end"){
             return std::make_pair(std::make_optional<Token>(TokenType::END,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else if(tem == "var"){
             return std::make_pair(std::make_optional<Token>(TokenType::VAR,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else if(tem == "const"){
             return std::make_pair(std::make_optional<Token>(TokenType::CONST,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else if(tem == "print"){
             return std::make_pair(std::make_optional<Token>(TokenType::PRINT,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
           else{
             return std::make_pair(std::make_optional<Token>(TokenType::IDENTIFIER,
-                                                            tem,pos,currentPos(),
+                                                            tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
         }
@@ -313,9 +313,9 @@ Tokenizer::nextToken() {
                                                         '(', pos, currentPos()),
                               std::optional<CompilationError>());
       }
-      case REFTBRACKET_STATE:{
+      case RIGHTBRACKET_STATE:{
         unreadLast();
-        return std::make_pair(std::make_optional<Token>(TokenType::REFT_BRACKET,
+        return std::make_pair(std::make_optional<Token>(TokenType::RIGHT_BRACKET,
                                                         ')', pos, currentPos()),
                               std::optional<CompilationError>());
       }
