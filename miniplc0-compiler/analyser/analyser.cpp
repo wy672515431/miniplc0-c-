@@ -122,11 +122,13 @@ std::optional<CompilationError> Analyser::analyseVariableDeclaration() {
     next = nextToken();
     if(!next.has_value()) return {};
     if(next.value().GetType() != TokenType::EQUAL_SIGN){
-      addUninitializedVariable(next.value());
       unreadToken();
+      addUninitializedVariable(next.value());
       return {};
     }
+    unreadToken();
     addVariable(next.value());
+    nextToken();
     auto err = analyseExpression();
     if(err.has_value()) return err;
     next =nextToken();
