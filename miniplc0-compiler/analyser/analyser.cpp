@@ -315,8 +315,8 @@ std::optional<CompilationError> Analyser::analyseAssignmentStatement() {
   if(!next.has_value()||next.value().GetType()!=TokenType::SEMICOLON)
     return std::make_optional<CompilationError>(_current_pos,
                                               ErrorCode::ErrNoSemicolon);
-  
-  _instructions.emplace_back(Operation::STO, next1.value().GetValueString());
+  int tem = getIndex(next1.value().GetValueString());
+  _instructions.emplace_back(Operation::STO,tem);
   return {};
 }
 
@@ -407,7 +407,7 @@ std::optional<CompilationError> Analyser::analyseFactor() {
       if(isUninitializedVariable(next.value().GetValueString()))
         return std::make_optional<CompilationError>(
           _current_pos, ErrorCode::ErrNotInitialized);
-      int32_t tem = getIndex(next.value.GetValueString());
+      int32_t tem = getIndex(next.value().GetValueString());
       _instructions.emplace_back(Operation::LOD, tem);
       break;
     }
