@@ -299,6 +299,7 @@ std::optional<CompilationError> Analyser::analyseAssignmentStatement() {
   if(isConstant(next.value().GetValueString()))
     return std::make_optional<CompilationError>(_current_pos,
                                               ErrorCode::ErrAssignToConstant);
+  auto next1 = nextToken();
   /*
   if(isUninitializedVariable(next.value().GetValueString()))
     return std::make_optional<CompilationError>(_current_pos,
@@ -315,6 +316,7 @@ std::optional<CompilationError> Analyser::analyseAssignmentStatement() {
     return std::make_optional<CompilationError>(_current_pos,
                                               ErrorCode::ErrNoSemicolon);
   
+  _instructions.emplace_back(Operation::STO, next1.value().GetValueString());
   return {};
 }
 
@@ -405,6 +407,8 @@ std::optional<CompilationError> Analyser::analyseFactor() {
       if(isUninitializedVariable(next.value().GetValueString()))
         return std::make_optional<CompilationError>(
           _current_pos, ErrorCode::ErrNotInitialized);
+      int32_t tem = getIndex(next.value.GetValueString());
+      _instructions.emplace_back(Operation::LOD, tem);
       break;
     }
     case TokenType::UNSIGNED_INTEGER:{
