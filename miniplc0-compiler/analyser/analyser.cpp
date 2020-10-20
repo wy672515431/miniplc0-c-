@@ -175,10 +175,12 @@ std::optional<CompilationError> Analyser::analyseStatementSequence() {
       case TokenType::IDENTIFIER:{
           err = analyseAssignmentStatement();
           if(err.has_value()) return err;
+          break;
       }
       case TokenType::PRINT:{
           err =analyseOutputStatement();
           if(err.has_value()) return err;
+          break;
       }
       case TokenType::SEMICOLON:{
           next = nextToken();
@@ -216,7 +218,7 @@ std::optional<CompilationError> Analyser::analyseConstantExpression(
       return std::make_optional<CompilationError>(_current_pos,
                                                   ErrorCode::ErrIntegerOverflow);
     }
-    ss >> out;
+    out = (int32_t)tem;
   }
   else if(next.value().GetType() == TokenType::MINUS_SIGN){
     prefix = -1;
@@ -230,9 +232,7 @@ std::optional<CompilationError> Analyser::analyseConstantExpression(
       return std::make_optional<CompilationError>(_current_pos,
                                                   ErrorCode::ErrIntegerOverflow);
     }
-    int tem1;
-    ss >> tem1;
-    out = -tem1;
+    out = -(int32_t)tem;
   }
   else{
       if(!next.has_value()||next.value().GetType()!=TokenType::UNSIGNED_INTEGER){
@@ -245,7 +245,7 @@ std::optional<CompilationError> Analyser::analyseConstantExpression(
         return std::make_optional<CompilationError>(_current_pos,
                                                   ErrorCode::ErrIntegerOverflow);
       }
-      ss >> out;
+      out = (int)tem;
   }
   return {};
 }

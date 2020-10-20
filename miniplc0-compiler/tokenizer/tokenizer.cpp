@@ -155,10 +155,8 @@ Tokenizer::nextToken() {
                                     pos, ErrIntegerOverflow));
           }
           else{
-            int32_t tem1;
-            ss >> tem1;
             return std::make_pair(std::make_optional<Token>(TokenType::UNSIGNED_INTEGER,
-                                                            tem1,pos,currentPos()),
+                                                            (int32_t)tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
         }
@@ -176,10 +174,8 @@ Tokenizer::nextToken() {
                                     pos, ErrIntegerOverflow));
           }
           else{
-            int32_t tem1;
-            ss >> tem1;
             return std::make_pair(std::make_optional<Token>(TokenType::UNSIGNED_INTEGER,
-                                                            tem1,pos,currentPos()),
+                                                            (int32_t)tem,pos,currentPos()),
                                                             std::optional<CompilationError>());
           }
         }
