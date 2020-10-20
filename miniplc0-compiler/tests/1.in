@@ -1,4 +1,4 @@
 begin
-    var a = 20;
+    var a ;
     print(a);
 end

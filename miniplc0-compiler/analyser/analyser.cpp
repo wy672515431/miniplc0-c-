@@ -125,15 +125,20 @@ std::optional<CompilationError> Analyser::analyseVariableDeclaration() {
     if(next.value().GetType() != TokenType::EQUAL_SIGN){
       unreadToken();
       addUninitializedVariable(next1.value());
-      return {};
-    }
-    addVariable(next1.value());
-    auto err = analyseExpression();
-    if(err.has_value()) return err;
-    next =nextToken();
-    if(!next.has_value()||next.value().GetType()!=TokenType::SEMICOLON)
-      return std::make_optional<CompilationError>(_current_pos,
+      next =nextToken();
+      if(!next.has_value()||next.value().GetType()!=TokenType::SEMICOLON)
+        return std::make_optional<CompilationError>(_current_pos,
                                                   ErrorCode::ErrNoSemicolon);
+    }
+    else{
+      addVariable(next1.value());
+      auto err = analyseExpression();
+      if(err.has_value()) return err;
+      next =nextToken();
+      if(!next.has_value()||next.value().GetType()!=TokenType::SEMICOLON)
+        return std::make_optional<CompilationError>(_current_pos,
+                                                  ErrorCode::ErrNoSemicolon);
+    }
   }
   // 预读？
 
@@ -397,6 +402,9 @@ std::optional<CompilationError> Analyser::analyseFactor() {
         _current_pos, ErrorCode::ErrIncompleteExpression);
   switch (next.value().GetType()) {
     case TokenType::IDENTIFIER:{
+      if(isUninitializedVariable(next.value().GetValueString()))
+        return std::make_optional<CompilationError>(
+          _current_pos, ErrorCode::ErrNotInitialized);
       break;
     }
     case TokenType::UNSIGNED_INTEGER:{
