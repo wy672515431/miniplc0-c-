@@ -399,7 +399,7 @@ std::optional<CompilationError> Analyser::analyseFactor() {
     }
     case TokenType::UNSIGNED_INTEGER:{
       int tem;
-      sstream s1;
+      std::stringstream s1;
       s1 << next.value().GetValueString();
       s1 >> tem;
       _instructions.emplace_back(Operation::LIT, tem);
