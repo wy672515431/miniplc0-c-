@@ -404,9 +404,13 @@ std::optional<CompilationError> Analyser::analyseFactor() {
         _current_pos, ErrorCode::ErrIncompleteExpression);
   switch (next.value().GetType()) {
     case TokenType::IDENTIFIER:{
+      if(!isDeclared(next.value().GetValueString()))
+        return std::make_optional<CompilationError>(
+          _current_pos, ErrorCode::ErrNotDeclared);
       if(isUninitializedVariable(next.value().GetValueString()))
         return std::make_optional<CompilationError>(
           _current_pos, ErrorCode::ErrNotInitialized);
+      
       int32_t tem = getIndex(next.value().GetValueString());
       _instructions.emplace_back(Operation::LOD, tem);
       break;
