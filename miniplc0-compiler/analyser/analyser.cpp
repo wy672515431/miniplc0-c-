@@ -294,9 +294,11 @@ std::optional<CompilationError> Analyser::analyseAssignmentStatement() {
   if(isConstant(next.value().GetValueString()))
     return std::make_optional<CompilationError>(_current_pos,
                                               ErrorCode::ErrAssignToConstant);
+  /*
   if(isUninitializedVariable(next.value().GetValueString()))
     return std::make_optional<CompilationError>(_current_pos,
                                               ErrorCode::ErrNotInitialized);
+  */
   next = nextToken();
   if(!next.has_value()||next.value().GetType()!=TokenType::EQUAL_SIGN)
     return std::make_optional<CompilationError>(_current_pos,
